@@ -16,6 +16,23 @@ export const getMe = async (): Promise<User> => {
   return res.json();
 };
 
+export const fetchNotes = async () => {
+  const cookieStore = cookies();
+
+  const res = await fetch(baseURL + "/notes", {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch notes");
+  }
+
+  return res.json();
+};
+
 export const checkSession = async (): Promise<User | null> => {
   const cookieStore = cookies();
 
@@ -25,5 +42,6 @@ export const checkSession = async (): Promise<User | null> => {
     },
   });
 
-  return res.json() || null;
+  const data = await res.json();
+return data || null;
 };
