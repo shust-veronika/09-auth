@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { fetchNotes } from "@/lib/api/serverApi";
 
 type Props = {
   params: { slug: string[] };
@@ -7,7 +8,7 @@ type Props = {
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
-  const filter = params.slug?.join(", ") || "All";
+  const filter = params.slug?.[0] || "all";
 
   return {
     title: `Notes - ${filter}`,
@@ -23,6 +24,30 @@ export async function generateMetadata({
   };
 }
 
-export default function FilterPage() {
-  return <div>Filter page</div>;
+export default async function FilterPage({ params }: Props) {
+  const tag = params.slug?.[0];
+
+  const notes = await fetchNotes({
+    tag: tag === "all" ? undefined : tag,
+  });
+
+  return (
+    <div>
+      <h1>Filtered Notes: {tag || "all"}</h1>
+
+      {notes.length === 0 ? (
+        <p>No notes found</p>
+      ) : (
+        <ul>
+          {notes.map((note: any) => (
+            <li key={note.id}>
+              <h3>{note.title}</h3>
+              <p>{note.content}</p>
+              {note.tag && <span>#{note.tag}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }

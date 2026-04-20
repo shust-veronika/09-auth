@@ -1,15 +1,25 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { Note } from "@/types/note";
+import { deleteNote } from "@/lib/api/clientApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
-  tag?: string;
-  notes?: Note[];
+  notes: Note[];
 };
 
 export default function NoteList({ notes }: Props) {
-  if (!notes || notes.length === 0) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    },
+  });
+
+  if (notes.length === 0) {
     return <p>Нотаток не знайдено.</p>;
   }
 
@@ -18,8 +28,19 @@ export default function NoteList({ notes }: Props) {
       {notes.map((note) => (
         <li key={note.id}>
           <Link href={`/notes/${note.id}`}>
-            {note.title}
+            <h3>{note.title}</h3>
           </Link>
+
+          <p>{note.content}</p>
+
+          {note.tag && <span>#{note.tag}</span>}
+
+          <button
+            onClick={() => mutation.mutate(note.id)}
+            disabled={mutation.isPending}
+          >
+            Delete
+          </button>
         </li>
       ))}
     </ul>

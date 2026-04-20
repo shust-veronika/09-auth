@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useAuthStore } from "@/lib/store/authStore";
 import { logout } from "@/lib/api/clientApi";
 import { useRouter } from "next/navigation";
@@ -18,10 +19,10 @@ export default function AuthNavigation() {
     return (
       <>
         <li>
-          <a href="/sign-in">Login</a>
+          <Link href="/sign-in">Login</Link>
         </li>
         <li>
-          <a href="/sign-up">Sign up</a>
+          <Link href="/sign-up">Sign up</Link>
         </li>
       </>
     );
@@ -30,7 +31,7 @@ export default function AuthNavigation() {
   return (
     <>
       <li>
-        <a href="/profile">Profile</a>
+        <Link href="/profile">Profile</Link>
       </li>
 
       <li>

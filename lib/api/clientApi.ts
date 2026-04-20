@@ -1,6 +1,7 @@
 import { api } from "./api";
 import { User } from "@/types/user";
 
+
 export const register = async (data: {
   email: string;
   password: string;
@@ -36,4 +37,30 @@ export const updateMe = async (data: {
 export const checkSession = async (): Promise<User | null> => {
   const res = await api.get("/auth/session");
   return res.data || null;
+};
+
+export const fetchNotes = async (params?: { tag?: string }) => {
+  const res = await api.get("/notes", {
+    params,
+  });
+  return res.data;
+};
+
+export const fetchNoteById = async (id: string) => {
+  const res = await api.get(`/notes/${id}`);
+  return res.data;
+};
+
+export const createNote = async (data: {
+  title: string;
+  content: string;
+  tag?: string;
+}) => {
+  const res = await api.post("/notes", data);
+  return res.data;
+};
+
+export const deleteNote = async (id: string) => {
+  const res = await api.delete(`/notes/${id}`);
+  return res.data;
 };

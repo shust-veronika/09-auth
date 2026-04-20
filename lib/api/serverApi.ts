@@ -1,53 +1,70 @@
 import { cookies } from "next/headers";
+import { api } from "./api";
 import { User } from "@/types/user";
+import { Note } from "@/types/note";
+import { AxiosResponse } from "axios";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL + "/api";
+const getCookieHeader = async () => {
+  const cookieStore = await cookies();
+  return {
+    Cookie: cookieStore.toString(),
+  };
+};
 
 export const getMe = async (): Promise<User> => {
-  const cookieStore = cookies();
+  try {
+    const headers = await getCookieHeader();
 
-  const res = await fetch(baseURL + "/users/me", {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-    cache: "no-store",
-  });
+    const res = await api.get<User>("/users/me", {
+      headers,
+    });
 
-  return res.json();
+    return res.data;
+  } catch (error) {
+    throw new Error("Failed to fetch user");
+  }
 };
 
-export const fetchNotes = async (params?: { tag?: string }) => {
-  const cookieStore = cookies();
+export const fetchNotes = async (params?: {
+  tag?: string;
+}): Promise<Note[]> => {
+  try {
+    const headers = await getCookieHeader();
 
-  const url = new URL(baseURL + "/notes");
+    const res = await api.get<Note[]>("/notes", {
+      headers,
+      params,
+    });
 
-  if (params?.tag) {
-    url.searchParams.set("tag", params.tag);
-  }
-
-  const res = await fetch(url.toString(), {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
+    return res.data;
+  } catch (error) {
     throw new Error("Failed to fetch notes");
   }
-
-  return res.json();
 };
 
-export const checkSession = async (): Promise<User | null> => {
-  const cookieStore = cookies();
+export const fetchNoteById = async (id: string): Promise<Note> => {
+  try {
+    const headers = await getCookieHeader();
 
-  const res = await fetch(baseURL + "/auth/session", {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
+    const res = await api.get<Note>(`/notes/${id}`, {
+      headers,
+    });
+
+    return res.data;
+  } catch (error) {
+    throw new Error("Failed to fetch note");
+  }
+};
+
+export const checkSession = async (): Promise<
+  AxiosResponse<{
+    accessToken: string;
+    refreshToken?: string;
+  }>
+> => {
+  const headers = await getCookieHeader();
+
+  return api.get("/auth/session", {
+    headers,
   });
-
-  const data = await res.json();
-return data || null;
 };
