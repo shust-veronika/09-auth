@@ -27,18 +27,18 @@ export async function proxy(req: NextRequest) {
     try {
       const data = await checkSession();
 
-      if (data?.accessToken) {
+      if (data?.data?.accessToken){
         isAuthenticated = true;
 
         const response = NextResponse.next();
 
-        response.cookies.set("accessToken", data.accessToken, {
+        response.cookies.set("accessToken", data.data.accessToken, {
           httpOnly: true,
           path: "/",
         });
 
-        if (data.refreshToken) {
-          response.cookies.set("refreshToken", data.refreshToken, {
+        if (data?.data?.refreshToken) {
+          response.cookies.set("refreshToken", data.data.refreshToken, {
             httpOnly: true,
             path: "/",
           });
