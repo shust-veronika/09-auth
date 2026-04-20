@@ -24,9 +24,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
     queryKey: ["notes", tag, page, debouncedSearch],
     queryFn: () =>
       fetchNotes({
-        tag,
-        search: debouncedSearch,
-        page,
+        tag
       }),
     placeholderData: keepPreviousData,
   });
