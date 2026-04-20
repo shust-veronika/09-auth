@@ -6,7 +6,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 
 export default function SignUpPage() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +18,7 @@ export default function SignUpPage() {
 
     const user = await register({ email, password });
 
-    setAuth(user);
+    setUser(user);
 
     router.push("/profile");
   };

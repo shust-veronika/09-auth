@@ -8,7 +8,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -31,14 +31,13 @@ export default function EditProfilePage() {
 
     const updatedUser = await updateMe({ username });
 
-    setAuth(updatedUser);
+    setUser(updatedUser);
 
     router.push("/profile");
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* avatar */}
       {avatar && (
         <Image
           src={avatar}
