@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NoteForm from "@/components/NoteForm/NoteForm";
 
 export const metadata: Metadata = {
   title: "Create Note",
@@ -23,7 +24,7 @@ export default function CreateNotePage() {
   return (
     <main style={{ padding: 24 }}>
       <h1>Create Note</h1>
-      
+      <NoteForm />
     </main>
   );
 }
