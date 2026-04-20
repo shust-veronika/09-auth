@@ -8,8 +8,10 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-export const fetchNotes = async () => {
-  const response = await api.get("/notes");
+export const fetchNotes = async (params: { tag?: string; search?: string; page?: number }) => {
+  const response = await api.get("/notes", {
+    params,
+  });
   return response.data;
 };
 
