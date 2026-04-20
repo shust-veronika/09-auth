@@ -16,10 +16,16 @@ export const getMe = async (): Promise<User> => {
   return res.json();
 };
 
-export const fetchNotes = async () => {
+export const fetchNotes = async (params?: { tag?: string }) => {
   const cookieStore = cookies();
 
-  const res = await fetch(baseURL + "/notes", {
+  const url = new URL(baseURL + "/notes");
+
+  if (params?.tag) {
+    url.searchParams.set("tag", params.tag);
+  }
+
+  const res = await fetch(url.toString(), {
     headers: {
       Cookie: cookieStore.toString(),
     },
