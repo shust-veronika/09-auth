@@ -6,6 +6,7 @@ import { createNote } from "@/lib/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import css from "./NoteForm.module.css";
 import { CreateNoteDTO } from "@/types/note";
+import { useNoteStore } from "@/lib/store/noteStore";
 
 type NoteFormProps = {
   onSuccess?: () => void;
