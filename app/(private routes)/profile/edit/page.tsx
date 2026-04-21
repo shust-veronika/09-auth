@@ -10,7 +10,7 @@ export default function EditProfilePage() {
   const router = useRouter();
   const { setUser } = useAuthStore();
 
-  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
 
@@ -18,7 +18,7 @@ export default function EditProfilePage() {
     const loadUser = async () => {
       const user = await getMe();
 
-      setUsername(user.username || "");
+      setUserId(user.id);
       setEmail(user.email);
       setAvatar(user.avatar || null);
     };
@@ -26,8 +26,8 @@ export default function EditProfilePage() {
     loadUser();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleAction = async (formData: FormData) => {
+    const username = formData.get("username") as string;
 
     const updatedUser = await updateMe({ username });
 
@@ -37,28 +37,37 @@ export default function EditProfilePage() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={handleAction}>
       {avatar && (
         <Image
           src={avatar}
-          alt="Avatar"
+          alt="User avatar"
           width={100}
           height={100}
         />
       )}
 
-      {}
-      <input value={email} readOnly />
+      <label>
+        Email (read-only)
+        <input
+          type="email"
+          name="email"
+          value={email}
+          readOnly
+        />
+      </label>
 
-      {}
-      <input
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+      <label>
+        Username
+        <input
+          type="text"
+          name="username"
+          defaultValue=""
+        />
+      </label>
 
       <button type="submit">Save</button>
 
-      {}
       <button type="button" onClick={() => router.back()}>
         Cancel
       </button>

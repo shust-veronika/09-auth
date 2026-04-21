@@ -1,5 +1,6 @@
 import { api } from "./api";
 import { User } from "@/types/user";
+import { Note } from "@/types/note";
 
 
 export const register = async (data: {
@@ -18,8 +19,13 @@ export const login = async (data: {
   return res.data;
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
   await api.post("/auth/logout");
+};
+
+export const checkSession = async (): Promise<User | null> => {
+  const res = await api.get("/auth/session");
+  return res.data || null;
 };
 
 export const getMe = async (): Promise<User> => {
@@ -34,19 +40,22 @@ export const updateMe = async (data: {
   return res.data;
 };
 
-export const checkSession = async (): Promise<User | null> => {
-  const res = await api.get("/auth/session");
-  return res.data || null;
-};
+export interface FetchNotesParams {
+  page?: number;
+  search?: string;
+  tag?: string;
+}
 
-export const fetchNotes = async (params?: { tag?: string }) => {
+export const fetchNotes = async (
+  params?: FetchNotesParams
+): Promise<Note[]> => {
   const res = await api.get("/notes", {
     params,
   });
   return res.data;
 };
 
-export const fetchNoteById = async (id: string) => {
+export const fetchNoteById = async (id: string): Promise<Note> => {
   const res = await api.get(`/notes/${id}`);
   return res.data;
 };
@@ -54,13 +63,13 @@ export const fetchNoteById = async (id: string) => {
 export const createNote = async (data: {
   title: string;
   content: string;
-  tag?: string;
-}) => {
+  tag: string; 
+}): Promise<Note> => {
   const res = await api.post("/notes", data);
   return res.data;
 };
 
-export const deleteNote = async (id: string) => {
+export const deleteNote = async (id: string): Promise<Note> => {
   const res = await api.delete(`/notes/${id}`);
   return res.data;
 };

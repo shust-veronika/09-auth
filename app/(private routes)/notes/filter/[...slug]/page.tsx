@@ -39,7 +39,7 @@ export default async function FilterPage({ params }: Props) {
         <p>No notes found</p>
       ) : (
         <ul>
-          {notes.map((note: any) => (
+          {notes.map((note) => (
             <li key={note.id}>
               <h3>{note.title}</h3>
               <p>{note.content}</p>
