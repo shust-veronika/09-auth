@@ -18,7 +18,7 @@ export default function EditProfilePage() {
     const loadUser = async () => {
       const user = await getMe();
 
-      setUserId(user.id);
+      setUserId(user.username);
       setEmail(user.email);
       setAvatar(user.avatar || null);
     };
@@ -62,7 +62,7 @@ export default function EditProfilePage() {
         <input
           type="text"
           name="username"
-          defaultValue=""
+          defaultValue="{username}"
         />
       </label>
 
