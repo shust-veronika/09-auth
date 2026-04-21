@@ -46,12 +46,18 @@ export interface FetchNotesParams {
   tag?: string;
 }
 
+export interface FetchNotesResponse {
+  notes: Note[];
+  totalPages: number;
+}
+
 export const fetchNotes = async (
   params?: FetchNotesParams
-): Promise<Note[]> => {
+): Promise<FetchNotesResponse> => {
   const res = await api.get("/notes", {
     params,
   });
+
   return res.data;
 };
 
