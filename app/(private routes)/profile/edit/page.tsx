@@ -9,32 +9,41 @@ import { useAuthStore } from "@/lib/store/authStore";
 export default function EditProfilePage() {
   const router = useRouter();
   const { setUser } = useAuthStore();
-
-  const [userId, setUserId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
-      const user = await getMe();
-
-      setUserId(user.username);
-      setEmail(user.email);
-      setAvatar(user.avatar || null);
+      try {
+        const user = await getMe();
+        setUsername(user.username);
+        setEmail(user.email);
+        setAvatar(user.avatar || null);
+      } catch (error) {
+        console.error("Failed to load user data", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadUser();
   }, []);
 
   const handleAction = async (formData: FormData) => {
-    const username = formData.get("username") as string;
+    const updatedUsername = formData.get("username") as string;
 
-    const updatedUser = await updateMe({ username });
-
-    setUser(updatedUser);
-
-    router.push("/profile");
+    try {
+      const updatedUser = await updateMe({ username: updatedUsername });
+      setUser(updatedUser);
+      router.push("/profile");
+    } catch (error) {
+      console.error("Failed to update profile", error);
+    }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <form action={handleAction}>
@@ -54,6 +63,7 @@ export default function EditProfilePage() {
           name="email"
           value={email}
           readOnly
+          className="bg-gray-100"
         />
       </label>
 
@@ -62,7 +72,8 @@ export default function EditProfilePage() {
         <input
           type="text"
           name="username"
-          defaultValue="{username}"
+          key={username}
+          defaultValue={username}
         />
       </label>
 
